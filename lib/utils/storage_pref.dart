@@ -142,6 +142,9 @@ abstract final class Pref {
     ).toList();
   }
 
+  static bool get hideCheeseSearchResults =>
+      _setting.get(SettingBoxKey.hideCheeseSearchResults, defaultValue: true);
+
   static bool get feedBackEnable =>
       _setting.get(SettingBoxKey.feedBackEnable, defaultValue: false);
 

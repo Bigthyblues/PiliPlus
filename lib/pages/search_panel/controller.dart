@@ -9,6 +9,8 @@ import 'package:PiliPlus/models/common/search/video_search_type.dart';
 import 'package:PiliPlus/models/search/result.dart';
 import 'package:PiliPlus/pages/common/common_list_controller.dart';
 import 'package:PiliPlus/pages/search_result/controller.dart';
+import 'package:PiliPlus/utils/global_data.dart';
+import 'package:PiliPlus/utils/storage_pref.dart';
 import 'package:PiliPlus/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
@@ -88,6 +90,49 @@ class SearchPanelController<R extends SearchNumData<T>, T>
           response.response.numResults ?? 0;
     }
     return false;
+  }
+
+  bool _isCheeseSearchVideo(SearchVideoItemModel item) {
+    // 搜索页课堂条目常见为 type=ketang，也可能带 cheese 标识或 /cheese/ 链接。
+    final type = item.type?.toLowerCase();
+    if (type == 'ketang' || type == 'cheese') {
+      return true;
+    }
+    final arcurl = item.arcurl?.toLowerCase();
+    if (arcurl != null && arcurl.contains('/cheese/')) {
+      return true;
+    }
+    final tag = item.tag?.toLowerCase();
+    return tag == 'cheese' || tag == '课堂';
+  }
+
+  bool _isBlacklistedCheese(SearchVideoItemModel item) {
+    final mid = item.owner.mid;
+    return mid != null && GlobalData().blackMids.contains(mid);
+  }
+
+  bool _shouldRemoveSearchItem(Object? item) {
+    if (item is SearchVideoItemModel && _isCheeseSearchVideo(item)) {
+      if (_isBlacklistedCheese(item)) {
+        return true;
+      }
+      return Pref.hideCheeseSearchResults;
+    }
+    return false;
+  }
+
+  @override
+  void handleListResponse(List<T> dataList) {
+    dataList.removeWhere((item) {
+      if (_shouldRemoveSearchItem(item)) {
+        return true;
+      }
+      if (item is List) {
+        item.removeWhere(_shouldRemoveSearchItem);
+        return item.isEmpty;
+      }
+      return false;
+    });
   }
 
   String? gaiaVtoken;
