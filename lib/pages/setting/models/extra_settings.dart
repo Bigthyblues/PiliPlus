@@ -494,6 +494,13 @@ List<SettingsModel> get extraSettings => [
     setKey: SettingBoxKey.enableSearchRcmd,
     defaultVal: true,
   ),
+  const SwitchModel(
+    title: '隐藏搜索结果中的课堂内容',
+    subtitle: '开启后会屏蔽搜索结果中的课堂（Cheese）条目',
+    leading: Icon(Icons.school_outlined),
+    setKey: SettingBoxKey.hideCheeseSearchResults,
+    defaultVal: true,
+  ),
   SwitchModel(
     title: '搜索默认词',
     subtitle: '是否展示搜索框默认词',
