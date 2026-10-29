@@ -1,5 +1,6 @@
 import 'package:PiliPlus/models/model_owner.dart';
 import 'package:PiliPlus/models/model_video.dart';
+import 'package:PiliPlus/utils/content_filter.dart';
 
 abstract class BaseRecVideoItemModel extends BaseVideoItemModel {
   String? goto;
@@ -9,6 +10,7 @@ abstract class BaseRecVideoItemModel extends BaseVideoItemModel {
   // app推荐专属
   int? param;
   String? pgcBadge;
+  String? paidLabel;
 }
 
 class RecVideoItemModel extends BaseRecVideoItemModel {
@@ -29,6 +31,7 @@ class RecVideoItemModel extends BaseRecVideoItemModel {
     //     ? RcmdReason.fromJson(json["rcmd_reason"])
     //     : RcmdReason(content: '');
     rcmdReason = json["rcmd_reason"]?['content'];
+    paidLabel = ContentFilter.paidLabel(json);
   }
 
   // @override

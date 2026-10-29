@@ -27,6 +27,7 @@ import 'package:PiliPlus/models_new/video/video_play_info/data.dart';
 import 'package:PiliPlus/models_new/video/video_relation/data.dart';
 import 'package:PiliPlus/utils/accounts.dart';
 import 'package:PiliPlus/utils/app_sign.dart';
+import 'package:PiliPlus/utils/content_filter.dart';
 import 'package:PiliPlus/utils/extension/string_ext.dart';
 import 'package:PiliPlus/utils/global_data.dart';
 import 'package:PiliPlus/utils/id_utils.dart';
@@ -64,7 +65,11 @@ abstract final class VideoHttp {
         //过滤掉live与ad，以及拉黑用户
         if (i['goto'] == 'av' &&
             (i['owner'] != null &&
-                !GlobalData().blackMids.contains(i['owner']['mid']))) {
+                !GlobalData().blackMids.contains(
+                  int.tryParse('${i['owner']['mid']}'),
+                )) &&
+            !(Pref.hideChargingVideos && RecommendFilter.isChargingJson(i))) {
+          if (Pref.hidePaidVideos && ContentFilter.isPaid(i)) continue;
           RecVideoItemModel videoItem = RecVideoItemModel.fromJson(i);
           if (!RecommendFilter.filter(videoItem)) {
             list.add(videoItem);
@@ -139,7 +144,11 @@ abstract final class VideoHttp {
             i['card_goto'] != 'ad_web_s' &&
             i['ad_info'] == null &&
             (i['args'] != null &&
-                !GlobalData().blackMids.contains(i['args']['up_id']))) {
+                !GlobalData().blackMids.contains(
+                  int.tryParse('${i['args']['up_id']}'),
+                )) &&
+            !(Pref.hideChargingVideos && RecommendFilter.isChargingJson(i))) {
+          if (Pref.hidePaidVideos && ContentFilter.isPaid(i)) continue;
           if (enableFilter &&
               i['args']?['tname'] != null &&
               zoneRegExp.hasMatch(i['args']['tname'])) {
@@ -170,6 +179,8 @@ abstract final class VideoHttp {
       List<HotVideoItemModel> list = <HotVideoItemModel>[];
       for (final i in res.data['data']['list']) {
         if (!GlobalData().blackMids.contains(i['owner']['mid']) &&
+            !(Pref.hideChargingVideos && RecommendFilter.isChargingJson(i)) &&
+            !(Pref.hidePaidVideos && ContentFilter.isPaid(i)) &&
             !RecommendFilter.filterTitle(i['title']) &&
             !RecommendFilter.filterLikeRatio(
               i['stat']['like'],
@@ -316,9 +327,17 @@ abstract final class VideoHttp {
       queryParameters: {'bvid': bvid},
     );
     if (res.data['code'] == 0) {
-      final items = (res.data['data'] as List?)?.map(
-        (i) => HotVideoItemModel.fromJson(i),
-      );
+      final items = (res.data['data'] as List?)
+          ?.where(
+            (i) =>
+                !GlobalData().blackMids.contains(
+                  int.tryParse('${i['owner']?['mid']}'),
+                ) &&
+                !(Pref.hideChargingVideos &&
+                    RecommendFilter.isChargingJson(i)) &&
+                !(Pref.hidePaidVideos && ContentFilter.isPaid(i)),
+          )
+          .map((i) => HotVideoItemModel.fromJson(i));
       final list = RecommendFilter.applyFilterToRelatedVideos
           ? items?.where((i) => !RecommendFilter.filterAll(i)).toList()
           : items?.toList();

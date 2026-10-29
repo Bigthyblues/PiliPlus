@@ -87,6 +87,7 @@ class SearchVideoItemModel extends BaseVideoItemModel {
     pubdate = json['pubdate'];
     ctime = json['senddate'];
     duration = DurationUtils.parseDuration(json['duration']);
+    tag = json['tag'];
     owner = SearchOwner.fromJson(json);
     stat = SearchStat.fromJson(json);
     isUnionVideo = json['is_union_video'];
