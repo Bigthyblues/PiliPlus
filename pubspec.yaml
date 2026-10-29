@@ -157,8 +157,8 @@ dependencies:
   # floating: ^3.0.0
   floating:
     git:
-      url: https://github.com/bggRGjQaUbCoE/floating.git
-      ref: version-3
+      url: https://github.com/wrbl606/floating.git
+      ref: a66ec0b9dabde6b5880a3f4f3425e57842a38e51
   # html解析
   html: ^0.15.4
   # html渲染
@@ -217,8 +217,8 @@ dependencies:
   # file_picker: ^10.3.3
   file_picker:
     git:
-      url: https://github.com/bggRGjQaUbCoE/flutter_file_picker.git
-      ref: v10.3.10
+      url: https://github.com/vicajilau/flutter_file_picker.git
+      ref: fd8afd89260436b63b9d41e150b4eb3c806cc8fd
   super_sliver_list:
     git:
       url: https://github.com/bggRGjQaUbCoE/super_sliver_list.git
