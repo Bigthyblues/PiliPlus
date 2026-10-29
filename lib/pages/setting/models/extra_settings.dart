@@ -501,6 +501,27 @@ List<SettingsModel> get extraSettings => [
     setKey: SettingBoxKey.hideCheeseSearchResults,
     defaultVal: true,
   ),
+  const SwitchModel(
+    title: '隐藏充电专属视频',
+    subtitle: '开启后会屏蔽首页推荐等视频列表中的充电专属内容',
+    leading: Icon(Icons.electric_bolt_outlined),
+    setKey: SettingBoxKey.hideChargingVideos,
+    defaultVal: false,
+  ),
+  const SwitchModel(
+    title: '严格匹配搜索结果',
+    subtitle: '隐藏完全未命中搜索词的结果，并优先显示命中更多词的内容',
+    leading: Icon(Icons.manage_search_outlined),
+    setKey: SettingBoxKey.strictSearchResults,
+    defaultVal: false,
+  ),
+  const SwitchModel(
+    title: '隐藏付费/会员视频',
+    subtitle: '根据接口返回的付费或会员标记隐藏推荐、热门及相关视频',
+    leading: Icon(Icons.payments_outlined),
+    setKey: SettingBoxKey.hidePaidVideos,
+    defaultVal: false,
+  ),
   SwitchModel(
     title: '搜索默认词',
     subtitle: '是否展示搜索框默认词',

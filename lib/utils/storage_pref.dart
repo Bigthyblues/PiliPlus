@@ -145,6 +145,15 @@ abstract final class Pref {
   static bool get hideCheeseSearchResults =>
       _setting.get(SettingBoxKey.hideCheeseSearchResults, defaultValue: true);
 
+  static bool get hideChargingVideos =>
+      _setting.get(SettingBoxKey.hideChargingVideos, defaultValue: false);
+
+  static bool get strictSearchResults =>
+      _setting.get(SettingBoxKey.strictSearchResults, defaultValue: false);
+
+  static bool get hidePaidVideos =>
+      _setting.get(SettingBoxKey.hidePaidVideos, defaultValue: false);
+
   static bool get feedBackEnable =>
       _setting.get(SettingBoxKey.feedBackEnable, defaultValue: false);
 

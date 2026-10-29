@@ -106,19 +106,37 @@ class SearchPanelController<R extends SearchNumData<T>, T>
     return tag == 'cheese' || tag == '课堂';
   }
 
-  bool _isBlacklistedCheese(SearchVideoItemModel item) {
+  bool _isBlacklistedVideo(SearchVideoItemModel item) {
     final mid = item.owner.mid;
     return mid != null && GlobalData().blackMids.contains(mid);
   }
 
   bool _shouldRemoveSearchItem(Object? item) {
-    if (item is SearchVideoItemModel && _isCheeseSearchVideo(item)) {
-      if (_isBlacklistedCheese(item)) {
-        return true;
-      }
-      return Pref.hideCheeseSearchResults;
+    if (item is SearchVideoItemModel) {
+      // Search responses are personalized independently by Bilibili, so apply
+      // the local blacklist to every video instead of only Cheese entries.
+      if (_isBlacklistedVideo(item)) return true;
+      return Pref.hideCheeseSearchResults && _isCheeseSearchVideo(item);
     }
     return false;
+  }
+
+  List<String> get _keywordTokens => keyword
+      .toLowerCase()
+      .replaceAll(RegExp(r'[，。！？、；：,.!?;:"“”‘’()（）\[\]{}]+'), ' ')
+      .trim()
+      .split(RegExp(r'\s+'))
+      .where((token) => token.isNotEmpty)
+      .toList();
+
+  int _searchMatchScore(SearchVideoItemModel item) {
+    final haystack = [
+      item.title,
+      item.desc,
+      item.tag,
+      item.owner.name,
+    ].whereType<String>().join(' ').toLowerCase();
+    return _keywordTokens.where(haystack.contains).length;
   }
 
   @override
@@ -133,6 +151,30 @@ class SearchPanelController<R extends SearchNumData<T>, T>
       }
       return false;
     });
+    if (Pref.strictSearchResults && dataList.isNotEmpty) {
+      final scored = dataList.indexed
+          .where((entry) => entry.$2 is SearchVideoItemModel)
+          .map(
+            (entry) => (
+              index: entry.$1,
+              item: entry.$2,
+              score: _searchMatchScore(entry.$2 as SearchVideoItemModel),
+            ),
+          )
+          .where((entry) => entry.score > 0)
+          .toList()
+        ..sort((a, b) {
+          final scoreOrder = b.score.compareTo(a.score);
+          return scoreOrder != 0 ? scoreOrder : a.index.compareTo(b.index);
+        });
+      final nonVideos = dataList
+          .where((item) => item is! SearchVideoItemModel)
+          .toList();
+      dataList
+        ..clear()
+        ..addAll(nonVideos)
+        ..addAll(scored.map((entry) => entry.item));
+    }
   }
 
   String? gaiaVtoken;
