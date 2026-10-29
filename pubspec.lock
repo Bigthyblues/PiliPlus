@@ -262,11 +262,9 @@ packages:
   chat_bottom_container:
     dependency: "direct main"
     description:
-      path: "packages/chat_bottom_container"
-      ref: main
-      resolved-ref: dba2bf10db4a6f89564d9be63ce17b18f0f7e3e5
-      url: "https://github.com/bggRGjQaUbCoE/flutter_chat_packages.git"
-    source: git
+      path: "third_party/chat_bottom_container"
+      relative: true
+    source: path
     version: "0.3.2"
   checked_yaml:
     dependency: transitive

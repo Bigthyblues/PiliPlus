@@ -176,10 +176,7 @@ dependencies:
   # extended_text: ^14.1.0
   # chat_bottom_container: ^0.2.0
   chat_bottom_container:
-    git:
-      url: https://github.com/bggRGjQaUbCoE/flutter_chat_packages.git
-      ref: main
-      path: packages/chat_bottom_container
+    path: third_party/chat_bottom_container
   image_picker: ^1.1.2
   intl: ^0.20.2
   archive: ^4.0.0
