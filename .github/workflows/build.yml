@@ -51,7 +51,9 @@ jobs:
     android:
         if: ${{ github.event_name == 'pull_request' || github.event.inputs.build_android == 'true' }}
         name: Release Android
-        runs-on: ubuntu-latest
+        # Keep the runner image stable instead of following ubuntu-latest's
+        # announced Ubuntu 26 migration during the PR build window.
+        runs-on: ubuntu-24.04
         permissions: write-all
 
         steps:
@@ -103,8 +105,21 @@ jobs:
               shell: pwsh
               run: lib/scripts/build.ps1 android
 
+            # pub may temporarily return EX_UNAVAILABLE (69) while resolving
+            # the project's Git dependencies. Retry here and keep the build
+            # itself offline so a transient registry/GitHub failure does not
+            # invalidate an otherwise valid PR.
+            - name: Resolve dependencies
+              shell: bash
+              run: |
+                  for attempt in 1 2 3; do
+                    flutter pub get && exit 0
+                    if [ "$attempt" -eq 3 ]; then exit 1; fi
+                    sleep $((attempt * 15))
+                  done
+
             - name: flutter build apk
-              run: flutter build apk --release --split-per-abi --dart-define-from-file=pili_release.json --pub
+              run: flutter build apk --release --split-per-abi --dart-define-from-file=pili_release.json --no-pub
 
             - name: rename
               run: |

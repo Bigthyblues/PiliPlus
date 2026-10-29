@@ -158,6 +158,14 @@ class VideoCardV extends StatelessWidget {
             Row(
               spacing: 2,
               children: [
+                if (videoItem.paidLabel case final paidLabel?)
+                  PBadge(
+                    text: paidLabel,
+                    isStack: false,
+                    size: PBadgeSize.small,
+                    type: PBadgeType.error,
+                    fontSize: 9,
+                  ),
                 if (videoItem.goto == 'bangumi')
                   PBadge(
                     text: videoItem.pgcBadge,

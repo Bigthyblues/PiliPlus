@@ -1,5 +1,6 @@
 import 'package:PiliPlus/models/model_rec_video_item.dart';
 import 'package:PiliPlus/models/model_video.dart';
+import 'package:PiliPlus/utils/content_filter.dart';
 import 'package:PiliPlus/utils/id_utils.dart';
 import 'package:PiliPlus/utils/num_utils.dart';
 
@@ -48,6 +49,7 @@ class RecVideoItemAppModel extends BaseRecVideoItemModel {
         ? ThreePoint.fromJson(json['three_point_v2'])
         : null;
     desc = json['desc'];
+    paidLabel = ContentFilter.paidLabel(json);
   }
 }
 
