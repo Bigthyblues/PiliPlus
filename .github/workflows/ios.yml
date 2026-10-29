@@ -25,6 +25,7 @@ jobs:
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
+          cache: true
 
       - name: Set and Extract version
         shell: pwsh
@@ -35,9 +36,18 @@ jobs:
         run: git apply $GITHUB_WORKSPACE/lib/scripts/modal-barrier-patch.diff
         continue-on-error: true
 
+      - name: Resolve dependencies
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            flutter pub get && exit 0
+            if [ "$attempt" -eq 3 ]; then exit 1; fi
+            sleep $((attempt * 15))
+          done
+
       - name: Build iOS
         run: |
-          flutter build ios --release --no-codesign --dart-define-from-file=pili_release.json
+          flutter build ios --release --no-codesign --dart-define-from-file=pili_release.json --no-pub
           ln -sf ./build/ios/iphoneos Payload
           # make AltSign happy...
           find Payload/Runner.app/Frameworks -type d -name "*.framework" -exec codesign --force --sign - --preserve-metadata=identifier,entitlements {} \;
