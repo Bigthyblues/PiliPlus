@@ -262,11 +262,9 @@ packages:
   chat_bottom_container:
     dependency: "direct main"
     description:
-      path: "packages/chat_bottom_container"
-      ref: main
-      resolved-ref: dba2bf10db4a6f89564d9be63ce17b18f0f7e3e5
-      url: "https://github.com/bggRGjQaUbCoE/flutter_chat_packages.git"
-    source: git
+      path: "third_party/chat_bottom_container"
+      relative: true
+    source: path
     version: "0.3.2"
   checked_yaml:
     dependency: transitive
@@ -528,11 +526,9 @@ packages:
   file_picker:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "v10.3.10"
-      resolved-ref: fd8afd89260436b63b9d41e150b4eb3c806cc8fd
-      url: "https://github.com/bggRGjQaUbCoE/flutter_file_picker.git"
-    source: git
+      path: "third_party/file_picker"
+      relative: true
+    source: path
     version: "10.3.10"
   file_selector_linux:
     dependency: transitive
@@ -593,11 +589,9 @@ packages:
   floating:
     dependency: "direct main"
     description:
-      path: "."
-      ref: version-3
-      resolved-ref: a66ec0b9dabde6b5880a3f4f3425e57842a38e51
-      url: "https://github.com/bggRGjQaUbCoE/floating.git"
-    source: git
+      path: "third_party/floating"
+      relative: true
+    source: path
     version: "3.0.0"
   flutter:
     dependency: "direct main"

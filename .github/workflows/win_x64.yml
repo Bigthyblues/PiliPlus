@@ -13,7 +13,8 @@ on:
 jobs:
   build-windows-app:
     name: Release Windows x64
-    runs-on: windows-latest
+    # The WebView plugin still needs the VS 2022 experimental coroutine support.
+    runs-on: windows-2022
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
