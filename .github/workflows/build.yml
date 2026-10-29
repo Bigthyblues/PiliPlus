@@ -105,10 +105,7 @@ jobs:
               shell: pwsh
               run: lib/scripts/build.ps1 android
 
-            # pub may temporarily return EX_UNAVAILABLE (69) while resolving
-            # the project's Git dependencies. Retry here and keep the build
-            # itself offline so a transient registry/GitHub failure does not
-            # invalidate an otherwise valid PR.
+            # Resolve dependencies separately so failures are reported here.
             - name: Resolve dependencies
               shell: bash
               run: |
@@ -119,7 +116,8 @@ jobs:
                   done
 
             - name: flutter build apk
-              run: flutter build apk --release --split-per-abi --dart-define-from-file=pili_release.json --no-pub
+              # Flutter 3.38 also skips release plugin registration with --no-pub.
+              run: flutter build apk --release --split-per-abi --dart-define-from-file=pili_release.json
 
             - name: rename
               run: |
