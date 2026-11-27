@@ -1,6 +1,7 @@
 import 'package:PiliPlus/models/model_avatar.dart';
 import 'package:PiliPlus/models/model_owner.dart';
 import 'package:PiliPlus/models/model_video.dart';
+import 'package:PiliPlus/utils/content_filter.dart';
 import 'package:PiliPlus/utils/duration_utils.dart';
 import 'package:PiliPlus/utils/em.dart';
 import 'package:PiliPlus/utils/extension/iterable_ext.dart';
@@ -71,6 +72,8 @@ class SearchVideoItemModel extends BaseVideoItemModel {
   String? tag;
   int? ctime;
   int? isUnionVideo;
+  bool isCharging = false;
+  String? paidLabel;
 
   List<({bool isEm, String text})>? titleList;
 
@@ -87,10 +90,13 @@ class SearchVideoItemModel extends BaseVideoItemModel {
     pubdate = json['pubdate'];
     ctime = json['senddate'];
     duration = DurationUtils.parseDuration(json['duration']);
+    videos = (json['videos'] as num?)?.toInt();
     tag = json['tag'];
     owner = SearchOwner.fromJson(json);
     stat = SearchStat.fromJson(json);
     isUnionVideo = json['is_union_video'];
+    isCharging = ContentFilter.isCharging(json);
+    paidLabel = ContentFilter.paidLabel(json);
   }
 }
 

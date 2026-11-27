@@ -6,7 +6,6 @@ import 'package:PiliPlus/pages/common/multi_select/base.dart';
 
 // 稍后再看, 排行榜等网页返回也使用该类
 class HotVideoItemModel extends BaseRecVideoItemModel with MultiSelectData {
-  int? videos;
   int? tid;
   String? tname;
   int? copyright;

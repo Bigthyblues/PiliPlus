@@ -10,6 +10,7 @@ abstract class BaseSimpleVideoItemModel {
 
 abstract class BaseVideoItemModel extends BaseSimpleVideoItemModel {
   int? aid;
+  int? videos;
   String? desc;
   int? pubdate;
   bool isFollowed = false;

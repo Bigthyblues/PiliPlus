@@ -10,6 +10,7 @@ import 'package:PiliPlus/models/search/result.dart';
 import 'package:PiliPlus/pages/common/common_list_controller.dart';
 import 'package:PiliPlus/pages/search_result/controller.dart';
 import 'package:PiliPlus/utils/global_data.dart';
+import 'package:PiliPlus/utils/search_result_filter.dart';
 import 'package:PiliPlus/utils/storage_pref.dart';
 import 'package:PiliPlus/utils/extension/scroll_controller_ext.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -116,27 +117,20 @@ class SearchPanelController<R extends SearchNumData<T>, T>
       // Search responses are personalized independently by Bilibili, so apply
       // the local blacklist to every video instead of only Cheese entries.
       if (_isBlacklistedVideo(item)) return true;
+      if (Pref.hideChargingVideos && item.isCharging) return true;
+      if (Pref.hidePaidVideos && item.paidLabel != null) return true;
       return Pref.hideCheeseSearchResults && _isCheeseSearchVideo(item);
     }
     return false;
   }
 
-  List<String> get _keywordTokens => keyword
-      .toLowerCase()
-      .replaceAll(RegExp(r'[，。！？、；：,.!?;:"“”‘’()（）\[\]{}]+'), ' ')
-      .trim()
-      .split(RegExp(r'\s+'))
-      .where((token) => token.isNotEmpty)
-      .toList();
-
   int _searchMatchScore(SearchVideoItemModel item) {
-    final haystack = [
+    return SearchResultFilter.matchScore(keyword, [
       item.title,
       item.desc,
       item.tag,
       item.owner.name,
-    ].whereType<String>().join(' ').toLowerCase();
-    return _keywordTokens.where(haystack.contains).length;
+    ]);
   }
 
   @override
@@ -161,7 +155,6 @@ class SearchPanelController<R extends SearchNumData<T>, T>
               score: _searchMatchScore(entry.$2 as SearchVideoItemModel),
             ),
           )
-          .where((entry) => entry.score > 0)
           .toList()
         ..sort((a, b) {
           final scoreOrder = b.score.compareTo(a.score);

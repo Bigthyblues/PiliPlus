@@ -23,6 +23,7 @@ class RecVideoItemModel extends BaseRecVideoItemModel {
     cover = json["pic"];
     title = json["title"];
     duration = json["duration"];
+    videos = (json['videos'] as num?)?.toInt();
     pubdate = json["pubdate"];
     owner = Owner.fromJson(json["owner"]);
     stat = Stat.fromJson(json["stat"]);

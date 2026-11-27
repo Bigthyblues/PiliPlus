@@ -36,6 +36,7 @@ class VideoCardH extends StatelessWidget {
   Widget build(BuildContext context) {
     String type = 'video';
     String? badge;
+    bool isPremiumBadge = false;
     if (videoItem case final SearchVideoItemModel item) {
       final typeOrNull = item.type;
       if (typeOrNull != null && typeOrNull.isNotEmpty) {
@@ -46,12 +47,19 @@ class VideoCardH extends StatelessWidget {
           badge = '直播';
         }
       }
-      if (item.isUnionVideo == 1) {
+      if (item.isCharging) {
+        badge = '充电专属';
+        isPremiumBadge = true;
+      } else if (item.paidLabel != null) {
+        badge = item.paidLabel;
+        isPremiumBadge = true;
+      } else if (item.isUnionVideo == 1) {
         badge = '合作';
       }
     } else if (videoItem case final HotVideoItemModel item) {
       if (item.isCharging == true) {
         badge = '充电专属';
+        isPremiumBadge = true;
       } else if (item.isCooperation == 1) {
         badge = '合作';
       } else {
@@ -64,6 +72,9 @@ class VideoCardH extends StatelessWidget {
       cover: videoItem.cover,
     );
     final colorScheme = ColorScheme.of(context);
+    final partLabel = (videoItem.videos ?? 0) > 1
+        ? '${videoItem.videos}P · '
+        : '';
     return Material(
       type: MaterialType.transparency,
       child: Stack(
@@ -149,16 +160,15 @@ class VideoCardH extends StatelessWidget {
                                 text: badge,
                                 top: 6.0,
                                 right: 6.0,
-                                type: switch (badge) {
-                                  '充电专属' => PBadgeType.error,
-                                  _ => PBadgeType.primary,
-                                },
+                                type: isPremiumBadge
+                                    ? PBadgeType.error
+                                    : PBadgeType.primary,
                               ),
                             if (progress != null && progress != 0) ...[
                               PBadge(
                                 text: progress == -1
-                                    ? '已看完'
-                                    : '${DurationUtils.formatDuration(progress)}/${DurationUtils.formatDuration(videoItem.duration)}',
+                                    ? '${partLabel}已看完'
+                                    : '$partLabel${DurationUtils.formatDuration(progress)}/${DurationUtils.formatDuration(videoItem.duration)}',
                                 right: 6,
                                 bottom: 8,
                                 type: PBadgeType.gray,
@@ -178,9 +188,8 @@ class VideoCardH extends StatelessWidget {
                               ),
                             ] else if (videoItem.duration > 0)
                               PBadge(
-                                text: DurationUtils.formatDuration(
-                                  videoItem.duration,
-                                ),
+                                text:
+                                    '$partLabel${DurationUtils.formatDuration(videoItem.duration)}',
                                 right: 6.0,
                                 bottom: 6.0,
                                 type: PBadgeType.gray,

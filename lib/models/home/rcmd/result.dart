@@ -19,6 +19,7 @@ class RecVideoItemAppModel extends BaseRecVideoItemModel {
     stat = RcmdStat.fromJson(json);
     // 改用player_args中的duration作为原始数据（秒数）
     duration = json['player_args']?['duration'] ?? 0;
+    videos = (json['videos'] as num?)?.toInt();
     //duration = json['cover_right_text'];
     title = json['title'];
     owner = RcmdOwner.fromJson(json);

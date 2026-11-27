@@ -31,5 +31,12 @@ void main() {
       );
       expect(ContentFilter.isPaid({'badge': '普通视频'}), isFalse);
     });
+
+    test('detects charging flags returned by search endpoints', () {
+      expect(ContentFilter.isCharging({'is_pay': 1}), isTrue);
+      expect(ContentFilter.isCharging({'is_charging_arc': true}), isTrue);
+      expect(ContentFilter.isCharging({'elec_arc_type': 1}), isTrue);
+      expect(ContentFilter.isCharging({'is_charge_video': 0}), isFalse);
+    });
   });
 }

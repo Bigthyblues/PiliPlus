@@ -510,7 +510,7 @@ List<SettingsModel> get extraSettings => [
   ),
   const SwitchModel(
     title: '严格匹配搜索结果',
-    subtitle: '隐藏完全未命中搜索词的结果，并优先显示命中更多词的内容',
+    subtitle: '优先显示命中更多搜索词的内容，未命中项保留在后方',
     leading: Icon(Icons.manage_search_outlined),
     setKey: SettingBoxKey.strictSearchResults,
     defaultVal: false,

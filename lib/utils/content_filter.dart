@@ -7,6 +7,7 @@ abstract final class ContentFilter {
     'cover_right_text',
     'business_info',
     'rcmd_reason',
+    'badgepay',
   };
 
   static String? _badgeText(Object? value) {
@@ -38,12 +39,20 @@ abstract final class ContentFilter {
     if (json['charging_pay'] case final Map chargingPay) {
       if (chargingPay['level'] != null) return true;
     }
+    if (_isEnabled(json['is_charging_pay']) ||
+        _isEnabled(json['is_charge_video']) ||
+        _isEnabled(json['is_charging_arc']) ||
+        _isEnabled(json['is_pay']) ||
+        _isEnabled(json['elec_arc_type'])) {
+      return true;
+    }
     return _matchingBadge(json, (text) => text.contains('充电专属')) != null;
   }
 
   static String? paidLabel(Map<String, dynamic> json) {
     final pgcLabel = json['pgc_label'];
     if (pgcLabel is String && _isPaidLabel(pgcLabel)) return pgcLabel;
+    if (_isEnabled(json['is_pay'])) return '付费';
     return _matchingBadge(json, _isPaidLabel);
   }
 
@@ -51,6 +60,9 @@ abstract final class ContentFilter {
 
   static bool _isPaidLabel(String label) =>
       const ['付费', '会员', '大会员', '专享'].any(label.contains);
+
+  static bool _isEnabled(Object? value) =>
+      value == true || value == 1 || value == '1';
 
   static String? _matchingBadge(
     Map<String, dynamic> json,
