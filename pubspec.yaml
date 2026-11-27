@@ -156,9 +156,7 @@ dependencies:
   # pip
   # floating: ^3.0.0
   floating:
-    git:
-      url: https://github.com/bggRGjQaUbCoE/floating.git
-      ref: version-3
+    path: third_party/floating
   # html解析
   html: ^0.15.4
   # html渲染
@@ -178,10 +176,7 @@ dependencies:
   # extended_text: ^14.1.0
   # chat_bottom_container: ^0.2.0
   chat_bottom_container:
-    git:
-      url: https://github.com/bggRGjQaUbCoE/flutter_chat_packages.git
-      ref: main
-      path: packages/chat_bottom_container
+    path: third_party/chat_bottom_container
   image_picker: ^1.1.2
   intl: ^0.20.2
   archive: ^4.0.0
@@ -216,9 +211,7 @@ dependencies:
   tray_manager: ^0.5.1
   # file_picker: ^10.3.3
   file_picker:
-    git:
-      url: https://github.com/bggRGjQaUbCoE/flutter_file_picker.git
-      ref: v10.3.10
+    path: third_party/file_picker
   super_sliver_list:
     git:
       url: https://github.com/bggRGjQaUbCoE/super_sliver_list.git
