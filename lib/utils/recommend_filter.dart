@@ -1,4 +1,5 @@
 import 'package:PiliPlus/models/model_video.dart';
+import 'package:PiliPlus/utils/content_filter.dart';
 import 'package:PiliPlus/utils/storage_pref.dart';
 
 abstract final class RecommendFilter {
@@ -12,6 +13,13 @@ abstract final class RecommendFilter {
     caseSensitive: false,
   );
   static bool enableFilter = rcmdRegExp.pattern.isNotEmpty;
+
+  /// The web and app recommendation APIs expose the same charging badge with
+  /// different shapes. Check the explicit payment object first, then only the
+  /// known badge fields so ordinary titles containing “充电” are not hidden.
+  static bool isChargingJson(Map<String, dynamic> json) {
+    return ContentFilter.isCharging(json);
+  }
 
   static bool filter(BaseVideoItemModel videoItem) {
     //由于相关视频中没有已关注标签，只能视为非关注视频

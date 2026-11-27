@@ -25,6 +25,7 @@ jobs:
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
+          cache: true
 
       - name: apply modal barrier patch
         working-directory: ${{ env.FLUTTER_ROOT }}
@@ -33,8 +34,18 @@ jobs:
         continue-on-error: true
 
       - name: Add fastforge and Inno Setup
+        shell: pwsh
         run: |
-          dart pub global activate fastforge
+          $success = $false
+          foreach ($attempt in 1..3) {
+            dart pub global activate fastforge
+            if ($LASTEXITCODE -eq 0) {
+              $success = $true
+              break
+            }
+            if ($attempt -lt 3) { Start-Sleep -Seconds ($attempt * 15) }
+          }
+          if (-not $success) { exit 1 }
           choco install innosetup
 
       - name: Add Chinese language file for Inno Setup
@@ -45,6 +56,20 @@ jobs:
       - name: Set and Extract version
         shell: pwsh
         run: lib/scripts/build.ps1
+
+      - name: Resolve dependencies
+        shell: pwsh
+        run: |
+          $success = $false
+          foreach ($attempt in 1..3) {
+            flutter pub get
+            if ($LASTEXITCODE -eq 0) {
+              $success = $true
+              break
+            }
+            if ($attempt -lt 3) { Start-Sleep -Seconds ($attempt * 15) }
+          }
+          if (-not $success) { exit 1 }
 
       - name: Build Windows
         run: |

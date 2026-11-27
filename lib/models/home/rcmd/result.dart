@@ -1,5 +1,6 @@
 import 'package:PiliPlus/models/model_rec_video_item.dart';
 import 'package:PiliPlus/models/model_video.dart';
+import 'package:PiliPlus/utils/content_filter.dart';
 import 'package:PiliPlus/utils/id_utils.dart';
 import 'package:PiliPlus/utils/num_utils.dart';
 
@@ -18,6 +19,7 @@ class RecVideoItemAppModel extends BaseRecVideoItemModel {
     stat = RcmdStat.fromJson(json);
     // 改用player_args中的duration作为原始数据（秒数）
     duration = json['player_args']?['duration'] ?? 0;
+    videos = (json['videos'] as num?)?.toInt();
     //duration = json['cover_right_text'];
     title = json['title'];
     owner = RcmdOwner.fromJson(json);
@@ -48,6 +50,7 @@ class RecVideoItemAppModel extends BaseRecVideoItemModel {
         ? ThreePoint.fromJson(json['three_point_v2'])
         : null;
     desc = json['desc'];
+    paidLabel = ContentFilter.paidLabel(json);
   }
 }
 

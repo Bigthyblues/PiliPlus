@@ -68,6 +68,9 @@ class VideoCardV extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final partLabel = (videoItem.videos ?? 0) > 1
+        ? '${videoItem.videos}P · '
+        : '';
     void onLongPress() => imageSaveDialog(
       title: videoItem.title,
       cover: videoItem.cover,
@@ -106,9 +109,8 @@ class VideoCardV extends StatelessWidget {
                               right: 7,
                               size: PBadgeSize.small,
                               type: PBadgeType.gray,
-                              text: DurationUtils.formatDuration(
-                                videoItem.duration,
-                              ),
+                              text:
+                                  '$partLabel${DurationUtils.formatDuration(videoItem.duration)}',
                             ),
                         ],
                       );
@@ -158,6 +160,14 @@ class VideoCardV extends StatelessWidget {
             Row(
               spacing: 2,
               children: [
+                if (videoItem.paidLabel case final paidLabel?)
+                  PBadge(
+                    text: paidLabel,
+                    isStack: false,
+                    size: PBadgeSize.small,
+                    type: PBadgeType.error,
+                    fontSize: 9,
+                  ),
                 if (videoItem.goto == 'bangumi')
                   PBadge(
                     text: videoItem.pgcBadge,
