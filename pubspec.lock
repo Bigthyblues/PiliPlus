@@ -124,11 +124,9 @@ packages:
   auto_orientation:
     dependency: "direct main"
     description:
-      path: "."
-      ref: master
-      resolved-ref: ca2bb137bd0e4b221df3bc5ba1492d2902c78624
-      url: "https://github.com/bggRGjQaUbCoE/auto_orientation.git"
-    source: git
+      path: "third_party/auto_orientation"
+      relative: true
+    source: path
     version: "2.3.1"
   battery_plus:
     dependency: "direct main"

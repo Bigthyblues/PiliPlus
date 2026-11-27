@@ -6,6 +6,7 @@ recorded in `pubspec.lock`:
 
 | Package | Version | Original commit | Recovery source |
 | --- | --- | --- | --- |
+| auto_orientation | 2.3.1 | ca2bb137bd0e4b221df3bc5ba1492d2902c78624 | Local Pub Git cache from the original fork |
 | file_picker | 10.3.10 | fd8afd89260436b63b9d41e150b4eb3c806cc8fd | https://github.com/vicajilau/flutter_file_picker/commit/fd8afd89260436b63b9d41e150b4eb3c806cc8fd |
 | floating | 3.0.0 | a66ec0b9dabde6b5880a3f4f3425e57842a38e51 | https://github.com/wrbl606/floating/commit/a66ec0b9dabde6b5880a3f4f3425e57842a38e51 |
 | chat_bottom_container | 0.3.2 | dba2bf10db4a6f89564d9be63ce17b18f0f7e3e5 | https://github.com/bggRGjQaUbCoE/flutter_chat_packages/commit/dba2bf10db4a6f89564d9be63ce17b18f0f7e3e5 |
@@ -16,5 +17,5 @@ picture-in-picture fixes, and the chat panel's `uiScale`, `keepChatPanel` and
 are omitted. The app uses path dependencies so fresh builds do not depend on
 upstream refs retaining these recovered commits.
 
-To update either package, review the upstream changes against this snapshot,
+To update a package, review the upstream changes against its snapshot,
 preserve the required fork fixes, and update this provenance record.

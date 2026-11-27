@@ -90,25 +90,29 @@ jobs:
               run: git apply $GITHUB_WORKSPACE/lib/scripts/modal-barrier-patch.diff
               continue-on-error: true
 
-            - name: Write key
+            - name: Configure Android release signing
               if: github.event_name == 'workflow_dispatch'
+              shell: bash
+              env:
+                  SIGN_KEYSTORE_BASE64: ${{ secrets.SIGN_KEYSTORE_BASE64 }}
+                  KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+                  KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+                  KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
               run: |
-                  if [ ! -z "${{ secrets.SIGN_KEYSTORE_BASE64 }}" ]; then
-                    echo "${{ secrets.SIGN_KEYSTORE_BASE64 }}" | base64 --decode > android/app/key.jks
-                    echo storeFile='key.jks' >> android/key.properties
-                    echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> android/key.properties
-                    echo keyAlias='${{ secrets.KEY_ALIAS }}' >> android/key.properties
-                    echo keyPassword='${{ secrets.KEY_PASSWORD }}' >> android/key.properties
-                  fi
+                  : "${SIGN_KEYSTORE_BASE64:?SIGN_KEYSTORE_BASE64 secret is required}"
+                  : "${KEYSTORE_PASSWORD:?KEYSTORE_PASSWORD secret is required}"
+                  : "${KEY_ALIAS:?KEY_ALIAS secret is required}"
+                  : "${KEY_PASSWORD:?KEY_PASSWORD secret is required}"
+                  umask 077
+                  printf '%s' "$SIGN_KEYSTORE_BASE64" | base64 --decode > android/app/key.jks
+                  printf 'storeFile=key.jks\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' \
+                    "$KEYSTORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" > android/key.properties
 
             - name: Set and Extract version
               shell: pwsh
               run: lib/scripts/build.ps1 android
 
-            # pub may temporarily return EX_UNAVAILABLE (69) while resolving
-            # the project's Git dependencies. Retry here and keep the build
-            # itself offline so a transient registry/GitHub failure does not
-            # invalidate an otherwise valid PR.
+            # Resolve dependencies separately so failures are reported here.
             - name: Resolve dependencies
               shell: bash
               run: |
@@ -119,7 +123,8 @@ jobs:
                   done
 
             - name: flutter build apk
-              run: flutter build apk --release --split-per-abi --dart-define-from-file=pili_release.json --no-pub
+              # Flutter 3.38 needs this step to generate the Android plugin registrant.
+              run: flutter build apk --release --split-per-abi --dart-define-from-file=pili_release.json
 
             - name: rename
               run: |
